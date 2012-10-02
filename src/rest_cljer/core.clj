@@ -19,23 +19,23 @@
    :XML   "text/xml"
    :PLAIN "text/plain"})
 
-(defn- content-type
+(defn content-type
   [sym]
   (if (keyword? sym)
     (sym types)
     sym))
 
-(defn- add-param! [request param-name param-vals]
+(defn add-param! [request param-name param-vals]
   (doseq [v param-vals]
     (.withParam request param-name v)))
 
-(defn- add-params [request params]
+(defn add-params [request params]
   (doseq [k (keys params)]
     (if (vector? (params k))
       (add-param! request k (params k))
       (add-param! request k [(params k)]))))
 
-(defn- add-body [request body]
+(defn add-body [request body]
   (when-not (nil? body)
     (.withBody request (first body) (second body))))
 
