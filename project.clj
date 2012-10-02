@@ -1,9 +1,11 @@
-(defproject rest-cljer "0.1.0"
+(defproject rest-cljer "0.1.1"
   :description "A Clojure wrapper for the rest driver library"
   :url "https://github.com/whostolebenfrog/rest-cljer"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.4.0"]
+                 [environ "0.3.0"]
+                 [junit "4.10"]
                  [clj-http "0.5.2"]
                  [midje "1.4.0"]]
            
