@@ -1,4 +1,4 @@
-(ns userhistory.clj-driver
+(ns rest-cljer.core
   (:require [midje.sweet :refer :all]
             [environ.core :refer [env]])
 
@@ -56,4 +56,3 @@
           (try (.verify driver#) (catch Exception e# (fact e# => nil)))
 
           (finally (.shutdownQuietly driver#))))))
-
