@@ -4,16 +4,52 @@ A Clojure wrapper for rest-driver
 
 ## Usage
 
-(fact "Example of testing two"
-   (rest-driven
-       [{:method :GET :url "/gety"}
-        {:type :JSON :status 200}
+    (:require [rest-cljer.core :refer [rest-driven]])
 
-        {:method :GET :url "/something"}
-        {:type :JSON :status 200}]
+Exmaple below shows midje usage.
 
-     (client/get "http://localhost:8081/gety") => (contains {:status 200})
-     (client/get "http://localhost:8081/something") => (contains {:status 200})))
+    (fact "Example of testing two"
+       (rest-driven
+           [{:method :GET :url "/gety"}
+            {:type :JSON :status 200}
+
+            {:method :GET :url "/something"}
+            {:type :JSON :status 200}]
+
+         (client/get "http://localhost:8081/gety") => (contains {:status 200})
+         (client/get "http://localhost:8081/something") => (contains {:status 200})))
+
+Wrap your test with the (rest-driven) macro.
+
+This expects params in the form of a vector of pairs of maps followed by a body form that is your test.
+
+The two maps correspond to a request and response (in that order). The request tells us what request to expect and the response map describes the response.
+
+Another example:
+
+     (fact "User history is posted to scrobbling"
+           (rest-driven
+               [{:method :POST :url "/events"
+                 :body [(Pattern/compile "\\{.*\"userid\":\"userid\".*\\}")
+                         "application/json"]}
+                {:type :JSON :status 202}]
+
+             (let [response (client/post ...snip...)]
+
+               response => (contains {:status 202}))))
+
+Request map params:
+
+    :method -> :GET :POST :PUT :DELETE :TRACE :HEAD :OPTIONS
+    :body   -> a string or regex that should match the body of the request
+    :url    -> a string or regex that should match the url
+
+Repsonse map params:
+
+    :type   -> :JSON (application/json) :XML (text/xml) :PLAIN (text/plain)
+    :status -> the response status as a number
+    :body   -> a response body (string)
+
 
 ## License
 
