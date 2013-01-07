@@ -4,6 +4,12 @@ A Clojure wrapper for rest-driver
 
 ## Usage
 
+Import from clojars with:
+
+    [rest-cljer "0.1.2"]
+    
+then
+
     (:require [rest-cljer.core :refer [rest-driven]])
 
 Exmaple below shows midje usage.
