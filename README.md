@@ -6,24 +6,30 @@ A Clojure wrapper for rest-driver
 
 Import from clojars with:
 
-    [rest-cljer "0.1.2"]
-    
+```clj
+[rest-cljer "0.1.2"]
+```
+
 then
 
-    (:require [rest-cljer.core :refer [rest-driven]])
+```clj
+(:require [rest-cljer.core :refer [rest-driven]])
+```
 
 Exmaple below shows midje usage.
 
-    (fact "Example of testing two"
-       (rest-driven
-           [{:method :GET :url "/gety"}
-            {:type :JSON :status 200}
+```clj
+(fact "Example of testing two"
+      (rest-driven
+          [{:method :GET :url "/gety"}
+           {:type :JSON :status 200}
 
-            {:method :GET :url "/something"}
-            {:type :JSON :status 200}]
+           {:method :GET :url "/something"}
+           {:type :JSON :status 200}]
 
-         (client/get "http://localhost:8081/gety") => (contains {:status 200})
-         (client/get "http://localhost:8081/something") => (contains {:status 200})))
+          (client/get "http://localhost:8081/gety") => (contains {:status 200})
+          (client/get "http://localhost:8081/something") => (contains {:status 200})))
+```
 
 Wrap your test with the (rest-driven) macro.
 
@@ -33,16 +39,18 @@ The two maps correspond to a request and response (in that order). The request t
 
 Another example:
 
-     (fact "User history is posted to scrobbling"
-           (rest-driven
-               [{:method :POST :url "/events"
-                 :body [(Pattern/compile "\\{.*\"userid\":\"userid\".*\\}")
-                         "application/json"]}
-                {:type :JSON :status 202}]
+```clj
+(fact "User history is posted to scrobbling"
+       (rest-driven
+           [{:method :POST :url "/events"
+             :body [(Pattern/compile "\\{.*\"userid\":\"userid\".*\\}")
+                    "application/json"]}
+            {:type :JSON :status 202}]
 
-             (let [response (client/post ...snip...)]
+           (let [response (client/post ...snip...)]
 
-               response => (contains {:status 202}))))
+             response => (contains {:status 202}))))
+```
 
 Request map params:
 
@@ -50,7 +58,7 @@ Request map params:
     :body   -> a string or regex that should match the body of the request
     :url    -> a string or regex that should match the url
 
-Repsonse map params:
+Response map params:
 
     :type   -> :JSON (application/json) :XML (text/xml) :PLAIN (text/plain)
     :status -> the response status as a number
