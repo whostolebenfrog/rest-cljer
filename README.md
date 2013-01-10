@@ -1,6 +1,6 @@
 # clj-driver
 
-A Clojure wrapper for rest-driver
+A Clojure wrapper for [rest-driver](https://github.com/rest-driver/rest-driver).
 
 ## Usage
 
@@ -16,7 +16,7 @@ then
 (:require [rest-cljer.core :refer [rest-driven]])
 ```
 
-Exmaple below shows midje usage.
+Example below shows midje usage.
 
 ```clj
 (fact "Example of testing two"
@@ -31,7 +31,7 @@ Exmaple below shows midje usage.
           (client/get "http://localhost:8081/something") => (contains {:status 200})))
 ```
 
-Wrap your test with the (rest-driven) macro.
+Wrap your test with the `(rest-driven)` macro.
 
 This expects params in the form of a vector of pairs of maps followed by a body form that is your test.
 
