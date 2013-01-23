@@ -2,7 +2,8 @@
   (:require [rest-cljer.core :refer [rest-driven]]
             [midje.sweet :refer :all]
             [clj-http.client :refer [post]]
-            [environ.core :refer [env]])
+            [environ.core :refer [env]]
+            [clojure.data.json :refer [json-str]])
   (:import [com.github.restdriver.clientdriver ClientDriver]))
 
 (fact "expected rest-driven call succeeds without exceptions"
@@ -19,3 +20,15 @@
             url (str "http://localhost:" restdriver-port)]
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [] (post url))) => (throws RuntimeException))
+
+(fact "test json document matching"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST :url resource-path
+                       :body {:ping "pong"}}
+                      {:status 204}]
+                     (post url {:content-type :json
+                                :body (json-str {:ping "pong"})
+                                :throw-exceptions false}) => (contains {:status 204}))))
