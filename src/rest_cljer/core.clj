@@ -1,9 +1,12 @@
 (ns rest-cljer.core
   (:require [midje.sweet :refer :all]
-            [environ.core :refer [env]])
+            [environ.core :refer [env]]
+            [clojure.data :refer [diff]]
+            [clojure.data.json :refer [read-str]])
 
   (:import [com.github.restdriver.clientdriver ClientDriverFactory ClientDriverRule]
-           [com.github.restdriver.clientdriver RestClientDriver ClientDriverRequest$Method]))
+           [com.github.restdriver.clientdriver RestClientDriver ClientDriverRequest$Method]
+           [org.hamcrest.Matcher]))
 
 (def verbs
   {:GET     (ClientDriverRequest$Method/GET)
@@ -25,6 +28,18 @@
     (sym types)
     sym))
 
+(defn- map-matcher [map]
+  (proxy [org.hamcrest.Matcher] []
+    (matches [item]
+      (= (read-str item :key-fn keyword) map))
+    (describeTo [description]
+      (doto description
+        (.appendText (str "expected json not received"))))
+    (describeMismatch [actual description]
+      (let [difs (diff map (read-str actual :key-fn keyword))]
+        (doto description
+          (.appendText (str "expected has <" (first difs) ">, actual has <" (second difs) ">")))))))
+
 (defn add-param! [request param-name param-vals]
   (doseq [v param-vals]
     (.withParam request param-name v)))
@@ -37,7 +52,9 @@
 
 (defn add-body [request body]
   (when-not (nil? body)
-    (.withBody request (first body) (second body))))
+    (if (map? body)
+      (.withBody request (map-matcher body) "application/json")
+      (.withBody request (first body) (second body)))))
 
 (defmacro rest-driven
   ([pairs & body]
