@@ -4,10 +4,10 @@ A Clojure wrapper for [rest-driver](https://github.com/rest-driver/rest-driver).
 
 ## Usage
 
-Import from clojars with:
+Import from [clojars](https://clojars.org/rest-cljer) with:
 
 ```clj
-[rest-cljer "0.1.3"]
+[rest-cljer "0.1.4"]
 ```
 
 then
@@ -55,7 +55,8 @@ Another example:
 You can also specific a map as the body of the request, thereby asserting that the right content is sent:
 
 ```clj
-(fact "I want to know my code is sending out the right information" (rest-driven
+(fact "I want to know my code is sending out the right information"
+       (rest-driven
            [{:method :POST :url "/downstream"
              :body {:information "yes,please"}
             {:type :JSON :status 202}]
