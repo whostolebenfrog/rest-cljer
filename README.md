@@ -52,10 +52,23 @@ Another example:
              response => (contains {:status 202}))))
 ```
 
+You can also specific a map as the body of the request, thereby asserting that the right content is sent:
+
+```clj
+(fact "I want to know my code is sending out the right information" (rest-driven
+           [{:method :POST :url "/downstream"
+             :body {:information "yes,please}
+            {:type :JSON :status 202}]
+
+           (let [response (client/post {:body (json-str {:infomation "yes,please"}) :content-type :json]
+
+             response => (contains {:status 202}))))
+```
+
 Request map params:
 
     :method -> :GET :POST :PUT :DELETE :TRACE :HEAD :OPTIONS
-    :body   -> a string or regex that should match the body of the request
+    :body   -> a string or regex or map that should match the body of the request
     :url    -> a string or regex that should match the url
 
 Response map params:
