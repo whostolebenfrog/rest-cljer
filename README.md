@@ -57,7 +57,7 @@ You can also specific a map as the body of the request, thereby asserting that t
 ```clj
 (fact "I want to know my code is sending out the right information" (rest-driven
            [{:method :POST :url "/downstream"
-             :body {:information "yes,please}
+             :body {:information "yes,please"}
             {:type :JSON :status 202}]
 
            (let [response (client/post {:body (json-str {:infomation "yes,please"}) :content-type :json]
