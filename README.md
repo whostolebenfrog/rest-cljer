@@ -66,6 +66,18 @@ You can also specific a map as the body of the request, thereby asserting that t
              response => (contains {:status 202}))))
 ```
 
+There is also some sweetening of response definitions, like so:
+
+```clj
+(rest-driven [{:method :GET :url resource-path}
+                      {:body {:inigo "montoya"}}]
+                     (let [resp (http/get url)]
+                       resp => (contains {:status 200})
+                       (:headers resp) => (contains {"content-type" "application/json"})
+                       (json/read-str (:body resp) :key-fn keyword) => {:inigo "montoya"}))
+```
+
+
 Request map params:
 
     :method -> :GET :POST :PUT :DELETE :TRACE :HEAD :OPTIONS

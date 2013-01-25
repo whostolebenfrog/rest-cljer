@@ -2,7 +2,7 @@
   (:require [midje.sweet :refer :all]
             [environ.core :refer [env]]
             [clojure.data :refer [diff]]
-            [clojure.data.json :refer [read-str]])
+            [clojure.data.json :refer [read-str json-str]])
 
   (:import [com.github.restdriver.clientdriver ClientDriverFactory ClientDriverRule]
            [com.github.restdriver.clientdriver RestClientDriver ClientDriverRequest$Method]
@@ -56,13 +56,18 @@
       (.withBody request (map-matcher body) "application/json")
       (.withBody request (first body) (second body)))))
 
+(defn sweeten-response [r]
+  (if (map? (:body r))
+    (assoc r :body (json-str (:body r)) :type :JSON :status 200)
+    r))
+
 (defmacro rest-driven
   ([pairs & body]
      `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))]
         (try
           (doseq [pair# (partition 2 ~pairs)]
             (let [request# (first pair#)
-                  response# (second pair#)
+                  response# (sweeten-response (second pair#))
                   on-request#    (.. (RestClientDriver/onRequestTo (:url request#))
                                       (withMethod ((:method request#) verbs)))
                   give-response# (.. (RestClientDriver/giveResponse (get response# :body ""))
