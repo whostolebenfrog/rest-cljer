@@ -83,13 +83,18 @@ Request map params:
     :method -> :GET :POST :PUT :DELETE :TRACE :HEAD :OPTIONS
     :body   -> a string or regex or map that should match the body of the request
     :url    -> a string or regex that should match the url
+    :and    -> a function that will recieve a ClientDriverRequest and can apply
+               additional rest-driver setup steps that aren't explicitly supported
+               by rest-cljer.
 
 Response map params:
 
     :type   -> :JSON (application/json) :XML (text/xml) :PLAIN (text/plain)
     :status -> the response status as a number
     :body   -> a response body (string)
-
+    :and    -> a function that will recieve a ClientDriverResponse and can apply
+               additional rest-driver setup steps that aren't explicitly supported
+               by rest-cljer.
 
 ## License
 

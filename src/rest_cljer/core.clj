@@ -74,6 +74,9 @@
                                       (withStatus (:status response#))
                                       (withContentType (content-type (:type response#))))]
 
+              (when (fn? (:and request#)) ((:and request#) on-request#))
+              (when (fn? (:and response#)) ((:and response#) give-response#))
+
               (add-params on-request# (:params request#))
               (add-body   on-request# (:body   request#))
 
