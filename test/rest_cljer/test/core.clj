@@ -1,7 +1,7 @@
 (ns rest-cljer.test.core
   (:require [rest-cljer.core :refer [rest-driven]]
             [midje.sweet :refer :all]
-            [clj-http.client :as http :refer [post] :only [get]]
+            [clj-http.client :as http :refer [post put]]
             [environ.core :refer [env]]
             [clojure.data.json :refer [json-str read-str]])
   (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]))
@@ -53,3 +53,33 @@
         (rest-driven [{:method :GET :url resource-path :and #(.withMethod % ClientDriverRequest$Method/POST)}
                       {:status 204 :and #(.withStatus % 205)}]
                      (post url) => (contains {:status 205}))))
+
+(fact "give repeated response any times"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :PUT :url resource-path}
+                      {:status 204 :times :any}]
+                     (put url) => (contains {:status 204})
+                     (put url) => (contains {:status 204})
+                     (put url) => (contains {:status 204}))))
+
+(fact "give repeated response a specfic number of times"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST :url resource-path}
+                      {:status 200 :times 2}]
+                     (post url) => (contains {:status 200})
+                     (post url) => (contains {:status 200})))
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST :url resource-path}
+                      {:status 200 :times 2}]
+                     (post url)
+                     (post url)
+                     (post url))) => (throws RuntimeException))

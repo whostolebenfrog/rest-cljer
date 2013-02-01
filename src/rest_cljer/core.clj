@@ -56,6 +56,10 @@
       (.withBody request (map-matcher body) "application/json")
       (.withBody request (first body) (second body)))))
 
+(defn add-times [expectation times]
+  (cond (= :any times) (.anyTimes expectation)
+        times (.times expectation times)))
+
 (defn sweeten-response [r]
   (if (map? (:body r))
     (assoc r :body (json-str (:body r)) :type :JSON :status 200)
@@ -80,7 +84,8 @@
               (add-params on-request# (:params request#))
               (add-body   on-request# (:body   request#))
 
-              (.addExpectation driver# on-request# give-response#)))
+              (let [expectation# (.addExpectation driver# on-request# give-response#)]
+                (add-times expectation# (:times response#)))))
 
           ~@body
 
