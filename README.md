@@ -95,6 +95,9 @@ Response map params:
     :and    -> a function that will recieve a ClientDriverResponse and can apply
                additional rest-driver setup steps that aren't explicitly supported
                by rest-cljer.
+    :times  -> for repeating responses, the number of times a matching request will 
+               be given this response (use :times :any to use this response for an 
+               unlimited number of matching requests).
 
 ## License
 
