@@ -60,6 +60,13 @@
   (cond (= :any times) (.anyTimes expectation)
         times (.times expectation times)))
 
+(defn add-header! [r [k v]]
+  (.withHeader r k v))
+
+(defn add-headers [r headers]
+  (doseq [h headers]
+    (add-header! r h)))
+
 (defn sweeten-response [r]
   (if (map? (:body r))
     (assoc r :body (json-str (:body r)) :type :JSON :status 200)
@@ -78,11 +85,13 @@
                                       (withStatus (:status response#))
                                       (withContentType (content-type (:type response#))))]
 
+              (add-params  on-request# (:params  request#))
+              (add-body    on-request# (:body    request#))
+              (add-headers on-request# (:headers request#))
+
               (when (fn? (:and request#)) ((:and request#) on-request#))
               (when (fn? (:and response#)) ((:and response#) give-response#))
-
-              (add-params on-request# (:params request#))
-              (add-body   on-request# (:body   request#))
+              (add-headers give-response# (:headers response#))
 
               (let [expectation# (.addExpectation driver# on-request# give-response#)]
                 (add-times expectation# (:times response#)))))
