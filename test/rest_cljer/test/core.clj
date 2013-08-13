@@ -83,3 +83,33 @@
                      (post url)
                      (post url)
                      (post url))) => (throws RuntimeException))
+
+(fact "rest-driven call with expected header succeeds without exceptions"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST, :url resource-path, :headers {"from" "midjefact", "with" "value"}}
+                      {:status 204}]
+                     (post url {:headers {"from" "midjefact", "with" "value"}}) => (contains {:status 204}))))
+
+(fact "rest-driven call with missing header throws exception"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST, :url resource-path, :headers {"From" "origin"}}
+                      {:status 204}]
+                     (post url) => (contains {:status 204}))) => (throws RuntimeException))
+
+(fact "rest-driven call with response headers succeeds without exceptions"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST, :url resource-path}
+                      {:status 204, :headers {"from" "rest-cljer", "with" "value"}}]
+                     (let [response (post url)]
+                       response => (contains {:status 204})
+                       (:headers response) => (contains {"from" "rest-cljer"})
+                       (:headers response) => (contains {"with" "value"})))))
