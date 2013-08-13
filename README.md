@@ -1,4 +1,4 @@
-# clj-driver
+# rest-cljer
 
 A Clojure wrapper for [rest-driver](https://github.com/rest-driver/rest-driver).
 
