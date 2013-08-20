@@ -45,7 +45,7 @@
                        (:headers resp) => (contains {"content-type" "application/json"})
                        (read-str (:body resp) :key-fn keyword) => {:inigo "montoya"}))))
 
-(fact "sweetening of response definitions doesn't override explicit value"
+(fact "sweetening of response doesn't override explicit http status"
       (let [restdriver-port (ClientDriver/getFreePort)
             resource-path "/some/resource/path"
             url (str "http://localhost:" restdriver-port resource-path)]
