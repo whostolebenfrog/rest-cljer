@@ -67,9 +67,10 @@
   (doseq [h headers]
     (add-header! r h)))
 
-(defn sweeten-response [r]
+(defn sweeten-response [{:keys [status] :or {status 200} :as r} ]
+  (println "Status" status "\n" r)
   (if (map? (:body r))
-    (assoc r :body (json-str (:body r)) :type :JSON :status 200)
+    (assoc r :body (json-str (:body r)) :type :JSON :status status)
     r))
 
 (defmacro rest-driven

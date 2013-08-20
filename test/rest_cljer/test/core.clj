@@ -45,6 +45,19 @@
                        (:headers resp) => (contains {"content-type" "application/json"})
                        (read-str (:body resp) :key-fn keyword) => {:inigo "montoya"}))))
 
+(fact "sweetening of response definitions doesn't override explicit value"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :GET :url resource-path}
+                      {:status 400
+                       :body {:inigo "montoya"}}]
+                     (let [resp (http/get url {:throw-exceptions false})]
+                       resp => (contains {:status 400})
+                       (:headers resp) => (contains {"content-type" "application/json"})
+                       (read-str (:body resp) :key-fn keyword) => {:inigo "montoya"}))))
+
 (fact "test post-processing of request and response, replace initial values with new ones using :and function"
       (let [restdriver-port (ClientDriver/getFreePort)
             resource-path "/some/resource/path"
