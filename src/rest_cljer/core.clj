@@ -2,11 +2,12 @@
   (:require [midje.sweet :refer :all]
             [environ.core :refer [env]]
             [clojure.data :refer [diff]]
-            [clojure.data.json :refer [read-str json-str]])
-
+            [clojure.data.json :refer [read-str json-str]]
+            [clojure.java.io :refer [input-stream]])
   (:import [com.github.restdriver.clientdriver ClientDriverFactory ClientDriverRule]
            [com.github.restdriver.clientdriver RestClientDriver ClientDriverRequest$Method]
-           [org.hamcrest.Matcher]))
+           [java.io InputStream]
+           [org.hamcrest Matcher]))
 
 (def verbs
   {:GET     (ClientDriverRequest$Method/GET)
@@ -72,6 +73,18 @@
     (assoc r :body (json-str (:body r)) :type :JSON :status status)
     r))
 
+(defn binary? [b]
+  (or (instance? InputStream b) (instance? (type (byte-array [])) b)))
+
+(defn create-response [b t]
+  "Create a rest-driver response with body b (optional) and content-type
+  t (optional) by dispatching to the correct method based on the
+  presence and type of b and t."
+  (cond (and b (binary? b)) (RestClientDriver/giveResponseAsBytes (input-stream b) t)
+        (and b t) (RestClientDriver/giveResponse b t)
+        b (RestClientDriver/giveResponse b)
+        :else (RestClientDriver/giveEmptyResponse)))
+
 (defmacro rest-driven
   ([pairs & body]
      `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))]
@@ -81,9 +94,8 @@
                   response# (sweeten-response (second pair#))
                   on-request#    (.. (RestClientDriver/onRequestTo (:url request#))
                                       (withMethod ((:method request#) verbs)))
-                  give-response# (.. (RestClientDriver/giveResponse (get response# :body ""))
-                                      (withStatus (:status response#))
-                                      (withContentType (content-type (:type response#))))]
+                  give-response# (.. (create-response (:body response#) (content-type (:type response#)))
+                                      (withStatus (:status response#)))]
 
               (add-params  on-request# (:params  request#))
               (add-body    on-request# (:body    request#))

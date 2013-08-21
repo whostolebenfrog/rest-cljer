@@ -15,6 +15,16 @@
                       {:status 204}]
                      (post url) => (contains {:status 204}))))
 
+(fact "rest-driven call with binary body succeeds without exceptions"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)
+            bytes (byte-array [(byte 10) (byte 20) (byte 30)])]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST, :url resource-path}
+                      {:status 200 :body bytes}]
+                     (-> (post url) :body (.getBytes) seq) => (seq bytes))))
+
 (fact "unexpected rest-driven call should fail with exception"
       (let [restdriver-port (ClientDriver/getFreePort)
             url (str "http://localhost:" restdriver-port)]
