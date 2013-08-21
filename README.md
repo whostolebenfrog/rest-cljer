@@ -7,7 +7,7 @@ A Clojure wrapper for [rest-driver](https://github.com/rest-driver/rest-driver).
 Import from [clojars](https://clojars.org/rest-cljer) with:
 
 ```clj
-[rest-cljer "0.1.9"]
+[rest-cljer "0.1.10"]
 ```
 
 then
@@ -91,9 +91,10 @@ Request map params:
 
 Response map params:
 
-    :type    -> :JSON (application/json) :XML (text/xml) :PLAIN (text/plain)
+    :type    -> :JSON (application/json) :XML (text/xml) :PLAIN (text/plain) or any other
+                string representing a valid media type (e.g. text/html)
     :status  -> the response status as a number
-    :body    -> a response body (string)
+    :body    -> the response body as string, byte array or input stream
     :headers -> a map of headers that will be added to the response (where key is
                 header name and value is header value).
     :and     -> a function that will recieve a ClientDriverResponse and can apply
