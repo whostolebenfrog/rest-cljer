@@ -1,7 +1,7 @@
 (ns rest-cljer.test.core
   (:require [rest-cljer.core :refer [rest-driven]]
             [midje.sweet :refer :all]
-            [clj-http.client :as http :refer [post put]]
+            [clj-http.client :as http :refer [post put get]]
             [environ.core :refer [env]]
             [clojure.data.json :refer [json-str read-str]])
   (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]))
@@ -136,3 +136,13 @@
                        response => (contains {:status 204})
                        (:headers response) => (contains {"from" "rest-cljer"})
                        (:headers response) => (contains {"with" "value"})))))
+
+(fact "can supply params using keywords as well as strings"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path "?a=a&b=b")]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :GET :url resource-path :params {:a "a" "b" "b"}}
+                      {:status 200}]
+                     (let [response (get url)]
+                       response => (contains {:status 200})))))
