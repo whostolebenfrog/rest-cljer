@@ -43,7 +43,7 @@
 
 (defn add-param! [request param-name param-vals]
   (doseq [v param-vals]
-    (.withParam request param-name v)))
+    (.withParam request (name param-name) v)))
 
 (defn add-params [request params]
   (doseq [k (keys params)]
