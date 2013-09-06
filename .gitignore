@@ -10,3 +10,4 @@ pom.xml
 .lein-plugins
 pom.xml.asc
 *.swp
+.lein-repl-history
