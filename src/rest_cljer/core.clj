@@ -46,10 +46,11 @@
     (.withParam request (name param-name) v)))
 
 (defn add-params [request params]
-  (doseq [k (keys params)]
-    (if (vector? (params k))
-      (add-param! request k (params k))
-      (add-param! request k [(params k)]))))
+  (if (= :any params) (.withAnyParams request)
+    (doseq [k (keys params)]
+      (if (vector? (params k))
+        (add-param! request k (params k))
+        (add-param! request k [(params k)])))))
 
 (defn add-body [request body]
   (when-not (nil? body)
