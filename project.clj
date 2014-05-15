@@ -16,4 +16,4 @@
 
   :profiles {:dev {:plugins [[lein-rpm "0.0.4"]
                              [lein-midje "3.1.0"]
-		             [lein-release "1.0.5"]}})
+		             [lein-release "1.0.5"]]}})
