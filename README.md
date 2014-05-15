@@ -83,6 +83,7 @@ Request map params:
     :method  -> :GET :POST :PUT :DELETE :TRACE :HEAD :OPTIONS
     :params  -> a map of expected request params in the form {"name" "value"} or {:name "value"}
                 that would match ?name=value
+                alternatively use :any to match any params
     :body    -> a string or regex or map that should match the body of the request
     :url     -> a string or regex that should match the url
     :headers -> a map of headers that are expected on the incoming request (where
