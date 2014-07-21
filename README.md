@@ -80,7 +80,7 @@ There is also some sweetening of response definitions, like so:
 
 Request map params:
 
-    :method  -> :GET :POST :PUT :DELETE :TRACE :HEAD :OPTIONS (defaults to :GET it not supplied)
+    :method  -> :GET :POST :PUT :DELETE :TRACE :HEAD :OPTIONS (defaults to :GET if not supplied)
     :params  -> a map of expected request params in the form {"name" "value"} or {:name "value"}
                 that would match ?name=value
                 alternatively use :any to match any params
