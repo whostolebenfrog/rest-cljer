@@ -162,7 +162,17 @@
             resource-path "/some/resource/path"
             url (str "http://localhost:" restdriver-port resource-path)]
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
-        (rest-driven [{:url resource-path :params :any}
+        (rest-driven [{:url resource-path}
                       {:status 200}]
                      (let [response (get url)]
                        response => (contains {:status 200})))))
+
+(fact "request/response can be paired as a vector"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [[{:url resource-path} {:status 201}]
+                      [{:url resource-path} {:status 202}]]
+                     (get url) => (contains {:status 201})
+                     (get url) => (contains {:status 202}))))

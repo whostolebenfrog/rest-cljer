@@ -52,6 +52,18 @@ Another example:
              response => (contains {:status 202}))))
 ```
 
+Each pair may be enclosed in a vector if you like:
+
+```clj
+(fact "Expectations as nested vectors"
+       (rest-driven
+           [[{:method :GET :url "/events"} {:type :JSON :status 200}]
+            [{:method :GET :url "/events"} {:type :JSON :status 201}]]
+
+             (client/get url) => (contains {:status 200})
+             (client/get url) => (contains {:status 201})))
+```
+
 You can also specific a map as the body of the request, thereby asserting that the right content is sent:
 
 ```clj
