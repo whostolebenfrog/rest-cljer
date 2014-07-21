@@ -94,7 +94,7 @@
             (let [request# (first pair#)
                   response# (sweeten-response (second pair#))
                   on-request#    (.. (RestClientDriver/onRequestTo (:url request#))
-                                      (withMethod ((:method request#) verbs)))
+                                      (withMethod ((:method request# :GET) verbs)))
                   give-response# (.. (create-response (:body response#) (content-type (:type response#)))
                                       (withStatus (:status response#)))]
 

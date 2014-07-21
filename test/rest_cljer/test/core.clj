@@ -156,3 +156,13 @@
                       {:status 200}]
                      (let [response (get url)]
                        response => (contains {:status 200})))))
+
+(fact "request method is :GET by default"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:url resource-path :params :any}
+                      {:status 200}]
+                     (let [response (get url)]
+                       response => (contains {:status 200})))))
