@@ -90,7 +90,7 @@
   ([pairs & body]
      `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))]
         (try
-          (doseq [pair# (partition 2 ~pairs)]
+          (doseq [pair# (partition 2 (flatten ~pairs))]
             (let [request# (first pair#)
                   response# (sweeten-response (second pair#))
                   on-request#    (.. (RestClientDriver/onRequestTo (:url request#))
