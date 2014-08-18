@@ -10,7 +10,7 @@
                  [clj-http "0.5.2"]
                  [midje "1.5.1"]
                  [org.clojure/data.json "0.2.1"]
-                 [com.github.rest-driver/rest-client-driver "1.1.30" :exclusions [org.slf4j/slf4j-nop]]]
+                 [com.github.rest-driver/rest-client-driver "1.1.36" :exclusions [org.slf4j/slf4j-nop]]]
 
   :lein-release {:deploy-via :clojars}
 

@@ -100,9 +100,11 @@ Request map params:
     :url     -> a string or regex that should match the url
     :headers -> a map of headers that are expected on the incoming request (where
                 key is header name and value is header value).
-    :and     -> a function that will recieve a ClientDriverRequest and can apply
+    :and     -> a function that will receive a ClientDriverRequest and can apply
                 additional rest-driver setup steps that aren't explicitly supported
                 by rest-cljer.
+    :not     -> a map of request params that will NOT appear in the request. Currently
+                only :headers is supported (i.e. to match against a header NOT appearing in the request).
 
 Response map params:
 
@@ -112,7 +114,7 @@ Response map params:
     :body    -> the response body as string, byte array or input stream
     :headers -> a map of headers that will be added to the response (where key is
                 header name and value is header value).
-    :and     -> a function that will recieve a ClientDriverResponse and can apply
+    :and     -> a function that will receive a ClientDriverResponse and can apply
                 additional rest-driver setup steps that aren't explicitly supported
                 by rest-cljer.
     :times   -> for repeating responses, the number of times a matching request will

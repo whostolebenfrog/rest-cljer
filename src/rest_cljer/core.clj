@@ -69,6 +69,13 @@
   (doseq [h headers]
     (add-header! r h)))
 
+(defn add-absent-header! [r [k v]]
+  (.withoutHeader r k))
+
+(defn add-absent-headers [r headers]
+  (doseq [h headers]
+    (add-absent-header! r h)))
+
 (defn sweeten-response [{:keys [status] :or {status 200} :as r} ]
   (if (map? (:body r))
     (assoc r :body (json-str (:body r)) :type :JSON :status status)
@@ -101,6 +108,7 @@
               (add-params  on-request# (:params  request#))
               (add-body    on-request# (:body    request#))
               (add-headers on-request# (:headers request#))
+              (add-absent-headers on-request# (:headers (:not request#)))
 
               (when (fn? (:and request#)) ((:and request#) on-request#))
               (when (fn? (:and response#)) ((:and response#) give-response#))
