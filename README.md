@@ -7,7 +7,7 @@ A Clojure wrapper for [rest-driver](https://github.com/rest-driver/rest-driver).
 Import from [clojars](https://clojars.org/rest-cljer) with:
 
 ```clj
-[rest-cljer "0.1.14"]
+[rest-cljer "0.1.15"]
 ```
 
 then
