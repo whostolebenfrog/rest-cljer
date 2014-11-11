@@ -93,6 +93,11 @@
         b (RestClientDriver/giveResponse b)
         :else (RestClientDriver/giveEmptyResponse)))
 
+(defn choose-method [{method :method}]
+  (if (string? method)
+    (ClientDriverRequest$Method/custom method)
+    ((or method :GET) verbs)))
+
 (defmacro rest-driven
   ([pairs & body]
      `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))]
@@ -101,7 +106,7 @@
             (let [request# (first pair#)
                   response# (sweeten-response (second pair#))
                   on-request#    (.. (RestClientDriver/onRequestTo (:url request#))
-                                      (withMethod ((:method request# :GET) verbs)))
+                                     (withMethod (choose-method request#)))
                   give-response# (.. (create-response (:body response#) (content-type (:type response#)))
                                       (withStatus (:status response#)))]
 
