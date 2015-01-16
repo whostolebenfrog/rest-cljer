@@ -9,6 +9,7 @@
                  [junit "4.11"]
                  [clj-http "0.5.2"]
                  [midje "1.5.1"]
+                 [speclj "3.1.0"]
                  [org.clojure/data.json "0.2.1"]
                  [com.github.rest-driver/rest-client-driver "1.1.42" :exclusions [org.slf4j/slf4j-nop]]]
 
