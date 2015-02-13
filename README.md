@@ -78,6 +78,14 @@ You can also specific a map as the body of the request, thereby asserting that t
              response => (contains {:status 202}))))
 ```
 
+The body can also be a regex or a string along with a content type, specified as a two-valued vector:
+
+```clj
+        :body ["a string" "text/plain"]
+        
+        :body [#"a regex" "someothercontent/type"]
+```
+
 There is also some sweetening of response definitions, like so:
 
 ```clj
@@ -97,7 +105,8 @@ Request map params:
     :params  -> a map of expected request params in the form {"name" "value"} or {:name "value"}
                 that would match ?name=value
                 alternatively use :any to match any params
-    :body    -> a string or regex or map that should match the body of the request
+    :body    -> a map that should match the body of the request or a vector containing a string or regex
+                plus the content type.
     :url     -> a string or regex that should match the url
     :headers -> a map of headers that are expected on the incoming request (where
                 key is header name and value is header value).
