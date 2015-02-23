@@ -86,6 +86,21 @@ The body can also be a regex or a string along with a content type, specified as
         :body [#"a regex" "someothercontent/type"]
 ```
 
+If you need to inspect the details of a request you can create a string-capture and analyse the details later:
+
+```clj
+(fact "I want to capture the body of a request for further inspection"
+      (let [capturer (string-capture)]
+        (rest-driven [{:method :POST :url resource-path
+                       :body ["somethingstrange" "text/plain"]
+                       :capture capturer}
+                      {:status 204}]
+                     (post url {:content-type "text/plain"
+                                :body "somethingstrange"
+                                :throw-exceptions false}) => (contains {:status 204})
+                     (.getContent capturer) => "somethingstrange")))
+```
+
 There is also some sweetening of response definitions, like so:
 
 ```clj
@@ -110,6 +125,8 @@ Request map params:
     :url     -> a string or regex that should match the url
     :headers -> a map of headers that are expected on the incoming request (where
                 key is header name and value is header value).
+    :capture -> an instance created using the string-capture function which captures the body
+                of the request as a string for later inspection using .getContent.
     :and     -> a function that will receive a ClientDriverRequest and can apply
                 additional rest-driver setup steps that aren't explicitly supported
                 by rest-cljer.

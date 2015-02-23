@@ -41,6 +41,9 @@
         (doto description
           (.appendText (str "expected has <" (first difs) ">, actual has <" (second difs) ">")))))))
 
+(defn string-capture []
+  (proxy [com.github.restdriver.clientdriver.capture.StringBodyCapture] []))
+
 (defn add-param! [request param-name param-vals]
   (doseq [v param-vals]
     (.withParam request (name param-name) v)))
@@ -75,6 +78,9 @@
 (defn add-absent-headers [r headers]
   (doseq [h headers]
     (add-absent-header! r h)))
+
+(defn add-capture [r c]
+  (.capturingBodyIn r c))
 
 (defn sweeten-response [{:keys [status] :or {status 200} :as r} ]
   (if (map? (:body r))
@@ -114,6 +120,7 @@
               (add-body    on-request# (:body    request#))
               (add-headers on-request# (:headers request#))
               (add-absent-headers on-request# (:headers (:not request#)))
+              (add-capture on-request# (:capture request#))
 
               (when (fn? (:and request#)) ((:and request#) on-request#))
               (when (fn? (:and response#)) ((:and response#) give-response#))
