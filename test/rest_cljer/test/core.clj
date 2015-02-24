@@ -1,9 +1,9 @@
 (ns rest-cljer.test.core
-  (:require [rest-cljer.core :refer [rest-driven string-capture]]
-            [midje.sweet :refer :all]
+  (:require [environ.core :refer [env]]
             [clj-http.client :as http]
-            [environ.core :refer [env]]
-            [clojure.data.json :refer [json-str read-str]])
+            [clojure.data.json :refer [json-str read-str]]
+            [midje.sweet :refer :all]
+            [rest-cljer.core :refer [rest-driven string-capture]])
   (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]))
 
 (fact "expected rest-driven call succeeds without exceptions"

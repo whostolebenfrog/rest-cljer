@@ -1,11 +1,12 @@
 (ns rest-cljer.core
-  (:require [midje.sweet :refer :all]
-            [environ.core :refer [env]]
-            [clojure.data :refer [diff]]
+  (:require [clojure.data :refer [diff]]
             [clojure.data.json :refer [read-str json-str]]
-            [clojure.java.io :refer [input-stream]])
-  (:import [com.github.restdriver.clientdriver ClientDriverFactory ClientDriverRule]
-           [com.github.restdriver.clientdriver RestClientDriver ClientDriverRequest$Method]
+            [clojure.java.io :refer [input-stream]]
+            [environ.core :refer [env]]
+            [midje.sweet :refer :all])
+  (:import [com.github.restdriver.clientdriver ClientDriverFactory ClientDriverRule
+            RestClientDriver ClientDriverRequest$Method]
+           [com.github.restdriver.clientdriver.capture StringBodyCapture]
            [java.io InputStream]
            [org.hamcrest Matcher]))
 
@@ -42,7 +43,7 @@
           (.appendText (str "expected has <" (first difs) ">, actual has <" (second difs) ">")))))))
 
 (defn string-capture []
-  (proxy [com.github.restdriver.clientdriver.capture.StringBodyCapture] []))
+  (proxy [StringBodyCapture] []))
 
 (defn add-param! [request param-name param-vals]
   (doseq [v param-vals]
