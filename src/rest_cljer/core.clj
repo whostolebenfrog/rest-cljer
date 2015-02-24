@@ -43,7 +43,8 @@
           (.appendText (str "expected has <" (first difs) ">, actual has <" (second difs) ">")))))))
 
 (defn string-capture []
-  (proxy [StringBodyCapture] []))
+  (proxy [StringBodyCapture clojure.lang.IFn] []
+    (invoke [] (proxy-super getContent))))
 
 (defn add-param! [request param-name param-vals]
   (doseq [v param-vals]

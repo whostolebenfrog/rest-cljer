@@ -56,7 +56,7 @@
                      (http/post url {:content-type :json
                                 :body (json-str {:ping "pong"})
                                 :throw-exceptions false}) => (contains {:status 204})
-                     (.getContent capturer) => "{\"ping\":\"pong\"}")))
+                     (capturer) => "{\"ping\":\"pong\"}")))
 
 (fact "test string capture"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -71,7 +71,7 @@
                      (http/post url {:content-type "text/plain"
                                 :body "somethingstrange"
                                 :throw-exceptions false}) => (contains {:status 204})
-                     (.getContent capturer) => "somethingstrange")))
+                     (capturer) => "somethingstrange")))
 
 (fact "test sweetening of response definitions"
       (let [restdriver-port (ClientDriver/getFreePort)

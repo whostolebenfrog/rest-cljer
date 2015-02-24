@@ -98,7 +98,7 @@ If you need to inspect the details of a request you can create a string-capture 
                      (post url {:content-type "text/plain"
                                 :body "somethingstrange"
                                 :throw-exceptions false}) => (contains {:status 204})
-                     (.getContent capturer) => "somethingstrange")))
+                     (capturer) => "somethingstrange")))
 ```
 
 There is also some sweetening of response definitions, like so:
