@@ -126,7 +126,7 @@ Request map params:
     :headers -> a map of headers that are expected on the incoming request (where
                 key is header name and value is header value).
     :capture -> an instance created using the string-capture function which captures the body
-                of the request as a string for later inspection using .getContent.
+                of the request as a string for later inspection.
     :and     -> a function that will receive a ClientDriverRequest and can apply
                 additional rest-driver setup steps that aren't explicitly supported
                 by rest-cljer.
