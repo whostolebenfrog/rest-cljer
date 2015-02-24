@@ -14,3 +14,4 @@ pom.xml.asc
 *.iml
 .idea
 .nrepl-port
+.DS_Store

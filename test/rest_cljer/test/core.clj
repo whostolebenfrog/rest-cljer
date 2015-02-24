@@ -1,5 +1,5 @@
 (ns rest-cljer.test.core
-  (:require [rest-cljer.core :refer [rest-driven]]
+  (:require [rest-cljer.core :refer [rest-driven string-capture]]
             [midje.sweet :refer :all]
             [clj-http.client :as http :refer [post put get patch]]
             [environ.core :refer [env]]
@@ -42,6 +42,36 @@
                      (post url {:content-type :json
                                 :body (json-str {:ping "pong"})
                                 :throw-exceptions false}) => (contains {:status 204}))))
+
+(fact "test json document capture as a string"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)
+            capturer (string-capture)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST :url resource-path
+                       :body {:ping "pong"}
+                       :capture capturer}
+                      {:status 204}]
+                     (post url {:content-type :json
+                                :body (json-str {:ping "pong"})
+                                :throw-exceptions false}) => (contains {:status 204})
+                     (.getContent capturer) => "{\"ping\":\"pong\"}")))
+
+(fact "test string capture"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)
+            capturer (string-capture)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST :url resource-path
+                       :body ["somethingstrange" "text/plain"]
+                       :capture capturer}
+                      {:status 204}]
+                     (post url {:content-type "text/plain"
+                                :body "somethingstrange"
+                                :throw-exceptions false}) => (contains {:status 204})
+                     (.getContent capturer) => "somethingstrange")))
 
 (fact "test sweetening of response definitions"
       (let [restdriver-port (ClientDriver/getFreePort)
