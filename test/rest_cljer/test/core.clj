@@ -1,7 +1,7 @@
 (ns rest-cljer.test.core
   (:require [rest-cljer.core :refer [rest-driven string-capture]]
             [midje.sweet :refer :all]
-            [clj-http.client :as http :refer [post put get patch]]
+            [clj-http.client :as http]
             [environ.core :refer [env]]
             [clojure.data.json :refer [json-str read-str]])
   (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]))
@@ -13,7 +13,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST, :url resource-path}
                       {:status 204}]
-                     (post url) => (contains {:status 204}))))
+                     (http/post url) => (contains {:status 204}))))
 
 (fact "rest-driven call with binary body succeeds without exceptions"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -23,13 +23,13 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST, :url resource-path}
                       {:status 200 :body bytes}]
-                     (-> (post url) :body (.getBytes) seq) => (seq bytes))))
+                     (-> (http/post url) :body (.getBytes) seq) => (seq bytes))))
 
 (fact "unexpected rest-driven call should fail with exception"
       (let [restdriver-port (ClientDriver/getFreePort)
             url (str "http://localhost:" restdriver-port)]
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
-        (rest-driven [] (post url))) => (throws RuntimeException))
+        (rest-driven [] (http/post url))) => (throws RuntimeException))
 
 (fact "test json document matching"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -39,7 +39,7 @@
         (rest-driven [{:method :POST :url resource-path
                        :body {:ping "pong"}}
                       {:status 204}]
-                     (post url {:content-type :json
+                     (http/post url {:content-type :json
                                 :body (json-str {:ping "pong"})
                                 :throw-exceptions false}) => (contains {:status 204}))))
 
@@ -53,7 +53,7 @@
                        :body {:ping "pong"}
                        :capture capturer}
                       {:status 204}]
-                     (post url {:content-type :json
+                     (http/post url {:content-type :json
                                 :body (json-str {:ping "pong"})
                                 :throw-exceptions false}) => (contains {:status 204})
                      (.getContent capturer) => "{\"ping\":\"pong\"}")))
@@ -68,7 +68,7 @@
                        :body ["somethingstrange" "text/plain"]
                        :capture capturer}
                       {:status 204}]
-                     (post url {:content-type "text/plain"
+                     (http/post url {:content-type "text/plain"
                                 :body "somethingstrange"
                                 :throw-exceptions false}) => (contains {:status 204})
                      (.getContent capturer) => "somethingstrange")))
@@ -105,7 +105,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :GET :url resource-path :and #(.withMethod % ClientDriverRequest$Method/POST)}
                       {:status 204 :and #(.withStatus % 205)}]
-                     (post url) => (contains {:status 205}))))
+                     (http/post url) => (contains {:status 205}))))
 
 (fact "give repeated response any times"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -114,9 +114,9 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :PUT :url resource-path}
                       {:status 204 :times :any}]
-                     (put url) => (contains {:status 204})
-                     (put url) => (contains {:status 204})
-                     (put url) => (contains {:status 204}))))
+                     (http/put url) => (contains {:status 204})
+                     (http/put url) => (contains {:status 204})
+                     (http/put url) => (contains {:status 204}))))
 
 (fact "give repeated response a specfic number of times"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -125,17 +125,17 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST :url resource-path}
                       {:status 200 :times 2}]
-                     (post url) => (contains {:status 200})
-                     (post url) => (contains {:status 200})))
+                     (http/post url) => (contains {:status 200})
+                     (http/post url) => (contains {:status 200})))
       (let [restdriver-port (ClientDriver/getFreePort)
             resource-path "/some/resource/path"
             url (str "http://localhost:" restdriver-port resource-path)]
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST :url resource-path}
                       {:status 200 :times 2}]
-                     (post url)
-                     (post url)
-                     (post url))) => (throws RuntimeException))
+                     (http/post url)
+                     (http/post url)
+                     (http/post url))) => (throws RuntimeException))
 
 (fact "rest-driven call with expected header succeeds without exceptions"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -144,7 +144,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST, :url resource-path, :headers {"from" "midjefact", "with" "value"}}
                       {:status 204}]
-                     (post url {:headers {"from" "midjefact", "with" "value"}}) => (contains {:status 204}))))
+                     (http/post url {:headers {"from" "midjefact", "with" "value"}}) => (contains {:status 204}))))
 
 (fact "rest-driven call with missing header throws exception"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -153,7 +153,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST, :url resource-path, :headers {"From" "origin"}}
                       {:status 204}]
-                     (post url) => (contains {:status 204}))) => (throws RuntimeException))
+                     (http/post url) => (contains {:status 204}))) => (throws RuntimeException))
 
 (fact "rest-driven call without header that is expected to be absent succeeds without exceptions"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -162,7 +162,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST, :url resource-path, :not {:headers {"myheader" "myvalue"}}}
                       {:status 204}]
-                     (post url) => (contains {:status 204}))))
+                     (http/post url) => (contains {:status 204}))))
 
 (fact "rest-driven call with header that is expected to be absent throws exception"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -171,7 +171,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST, :url resource-path, :not {:headers {"myheader" "myvalue"}}}
                       {:status 204}]
-                     (post url {:headers {"myheader" "myvalue"}}) => (contains {:status 204}))) => (throws RuntimeException))
+                     (http/post url {:headers {"myheader" "myvalue"}}) => (contains {:status 204}))) => (throws RuntimeException))
 
 (fact "rest-driven call with response headers succeeds without exceptions"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -180,7 +180,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :POST, :url resource-path}
                       {:status 204, :headers {"from" "rest-cljer", "with" "value"}}]
-                     (let [response (post url)]
+                     (let [response (http/post url)]
                        response => (contains {:status 204})
                        (:headers response) => (contains {"from" "rest-cljer"})
                        (:headers response) => (contains {"with" "value"})))))
@@ -192,7 +192,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :GET :url resource-path :params {:a "a" "b" "b"}}
                       {:status 200}]
-                     (let [response (get url)]
+                     (let [response (http/get url)]
                        response => (contains {:status 200})))))
 
 (fact "can specify :any params"
@@ -202,7 +202,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method :GET :url resource-path :params :any}
                       {:status 200}]
-                     (let [response (get url)]
+                     (let [response (http/get url)]
                        response => (contains {:status 200})))))
 
 (fact "request method is :GET by default"
@@ -212,7 +212,7 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:url resource-path}
                       {:status 200}]
-                     (let [response (get url)]
+                     (let [response (http/get url)]
                        response => (contains {:status 200})))))
 
 (fact "request/response can be paired as a vector"
@@ -222,8 +222,8 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [[{:url resource-path} {:status 201}]
                       [{:url resource-path} {:status 202}]]
-                     (get url) => (contains {:status 201})
-                     (get url) => (contains {:status 202}))))
+                     (http/get url) => (contains {:status 201})
+                     (http/get url) => (contains {:status 202}))))
 
 (fact "expected rest-driven call with an unusual HTTP method succeeds"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -232,4 +232,4 @@
         (alter-var-root (var env) assoc :restdriver-port restdriver-port)
         (rest-driven [{:method "PATCH", :url resource-path}
                       {:status 204}]
-                     (patch url) => (contains {:status 204}))))
+                     (http/patch url) => (contains {:status 204}))))
