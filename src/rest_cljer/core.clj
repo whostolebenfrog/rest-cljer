@@ -74,12 +74,18 @@
   (doseq [h headers]
     (add-header! r h)))
 
-(defn add-absent-header! [r [k v]]
+(defn add-absent-header! [r k]
   (.withoutHeader r k))
 
 (defn add-absent-headers [r headers]
-  (doseq [h headers]
-    (add-absent-header! r h)))
+  "Add headers that shouldn't be present. The original approach was to add them as a map. However,
+   the value of each header is irrelevant and, so, a second approach of specifying just the names
+   of the headers as a vector has been added. The first apprach is retained for back compatibility."
+  (if (map? headers)
+    (doseq [h headers]
+      (add-absent-header! r (first h)))
+    (doseq [h headers]
+      (add-absent-header! r h))))
 
 (defn add-capture [r c]
   (.capturingBodyIn r c))

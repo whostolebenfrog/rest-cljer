@@ -123,8 +123,8 @@ Request map params:
     :body    -> a map that should match the body of the request or a vector containing a string or regex
                 plus the content type.
     :url     -> a string or regex that should match the url
-    :headers -> a map of headers that are expected on the incoming request (where
-                key is header name and value is header value).
+    :headers -> a map of headers that are expected on the incoming request where
+                keys are header names and values are header values.
     :capture -> an instance created using the string-capture function which captures the body
                 of the request as a string for later inspection.
     :and     -> a function that will receive a ClientDriverRequest and can apply
@@ -132,6 +132,9 @@ Request map params:
                 by rest-cljer.
     :not     -> a map of request params that will NOT appear in the request. Currently
                 only :headers is supported (i.e. to match against a header NOT appearing in the request).
+                :headers should be specified as a vector of strings, although a deprecated approach is
+                to specify a map where keys are header names and values are header values (which can be 
+                any value).
 
 Response map params:
 
