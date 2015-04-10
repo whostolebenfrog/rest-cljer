@@ -173,6 +173,24 @@
                       {:status 204}]
                      (http/post url {:headers {"myheader" "myvalue"}}) => (contains {:status 204}))) => (throws RuntimeException))
 
+(fact "rest-driven call without headers that are expected to be absent (specified in a vector) succeeds without exceptions"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST, :url resource-path, :not {:headers ["myheader"]}}
+                      {:status 204}]
+                     (http/post url) => (contains {:status 204}))))
+
+(fact "rest-driven call with headers that are expected to be absent (specified in a vector) throws exception"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:method :POST, :url resource-path, :not {:headers ["myheader"]}}
+                      {:status 204}]
+                     (http/post url {:headers {"myheader" "myvalue"}}) => (contains {:status 204}))) => (throws RuntimeException))
+
 (fact "rest-driven call with response headers succeeds without exceptions"
       (let [restdriver-port (ClientDriver/getFreePort)
             resource-path "/some/resource/path"
