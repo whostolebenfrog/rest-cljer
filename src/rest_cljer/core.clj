@@ -8,7 +8,8 @@
             RestClientDriver ClientDriverRequest$Method]
            [com.github.restdriver.clientdriver.capture StringBodyCapture]
            [java.io InputStream]
-           [org.hamcrest Matcher]))
+           [org.hamcrest Matcher]
+           [java.util.concurrent TimeUnit]))
 
 (def verbs
   {:GET     (ClientDriverRequest$Method/GET)
@@ -77,6 +78,10 @@
 (defn add-absent-header! [r k]
   (.withoutHeader r k))
 
+(defn add-after  [r m]
+  (when m
+    (.after r m TimeUnit/MILLISECONDS)))
+
 (defn add-absent-headers [r headers]
   "Add headers that shouldn't be present. The original approach was to add them as a map. However,
    the value of each header is irrelevant and, so, a second approach of specifying just the names
@@ -122,13 +127,15 @@
                   on-request#    (.. (RestClientDriver/onRequestTo (:url request#))
                                      (withMethod (choose-method request#)))
                   give-response# (.. (create-response (:body response#) (content-type (:type response#)))
-                                      (withStatus (:status response#)))]
+                                     (withStatus (:status response#)))]
 
               (add-params  on-request# (:params  request#))
               (add-body    on-request# (:body    request#))
               (add-headers on-request# (:headers request#))
               (add-absent-headers on-request# (:headers (:not request#)))
               (add-capture on-request# (:capture request#))
+
+              (add-after give-response# (:after response#))
 
               (when (fn? (:and request#)) ((:and request#) on-request#))
               (when (fn? (:and response#)) ((:and response#) give-response#))
