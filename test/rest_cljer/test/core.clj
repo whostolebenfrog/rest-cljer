@@ -4,7 +4,8 @@
             [clojure.data.json :refer [json-str read-str]]
             [midje.sweet :refer :all]
             [rest-cljer.core :refer [rest-driven string-capture]])
-  (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]))
+  (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]
+           [java.net SocketTimeoutException]))
 
 (fact "expected rest-driven call succeeds without exceptions"
       (let [restdriver-port (ClientDriver/getFreePort)
@@ -251,3 +252,13 @@
         (rest-driven [{:method "PATCH", :url resource-path}
                       {:status 204}]
                      (http/patch url) => (contains {:status 204}))))
+
+(fact "expected rest-driven call times out if after is set to larger than socket-timeout"
+      (let [restdriver-port (ClientDriver/getFreePort)
+            resource-path "/some/resource/path"
+            url (str "http://localhost:" restdriver-port resource-path)]
+        (alter-var-root (var env) assoc :restdriver-port restdriver-port)
+        (rest-driven [{:url resource-path}
+                      {:status 200
+                       :after 200}]
+                     (http/get url {:socket-timeout 100}) => (throws SocketTimeoutException))))
