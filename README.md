@@ -150,6 +150,8 @@ Response map params:
     :times   -> for repeating responses, the number of times a matching request will
                 be given this response (use :times :any to use this response for an
                 unlimited number of matching requests).
+    :after   -> return respone after a sepecified number of milliseconds 
+                (e.g. :after 1000 will return call after 1 second).
 
 ## License
 
