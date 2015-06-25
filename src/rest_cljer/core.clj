@@ -1,6 +1,6 @@
 (ns rest-cljer.core
-  (:require [clojure.data :refer [diff]]
-            [clojure.data.json :refer [read-str json-str]]
+  (:require [cheshire.core :as json]
+            [clojure.data :refer [diff]]
             [clojure.java.io :refer [input-stream]]
             [environ.core :refer [env]]
             [midje.sweet :refer :all])
@@ -34,12 +34,12 @@
 (defn- map-matcher [map]
   (proxy [org.hamcrest.Matcher] []
     (matches [item]
-      (= (read-str item :key-fn keyword) map))
+      (= (json/parse-string item true) map))
     (describeTo [description]
       (doto description
         (.appendText (str "expected json not received"))))
     (describeMismatch [actual description]
-      (let [difs (diff map (read-str actual :key-fn keyword))]
+      (let [difs (diff map (json/parse-string actual true))]
         (doto description
           (.appendText (str "expected has <" (first difs) ">, actual has <" (second difs) ">")))))))
 
@@ -97,7 +97,7 @@
 
 (defn sweeten-response [{:keys [status] :or {status 200} :as r} ]
   (if (map? (:body r))
-    (assoc r :body (json-str (:body r)) :type :JSON :status status)
+    (assoc r :body (json/generate-string (:body r)) :type :JSON :status status)
     r))
 
 (defn binary? [b]
