@@ -13,17 +13,17 @@
 
 (def verbs
   {:GET     (ClientDriverRequest$Method/GET)
+   :DELETE  (ClientDriverRequest$Method/DELETE)
+   :HEAD    (ClientDriverRequest$Method/HEAD)
+   :OPTIONS (ClientDriverRequest$Method/OPTIONS)
    :POST    (ClientDriverRequest$Method/POST)
    :PUT     (ClientDriverRequest$Method/PUT)
-   :DELETE  (ClientDriverRequest$Method/DELETE)
-   :TRACE   (ClientDriverRequest$Method/TRACE)
-   :HEAD    (ClientDriverRequest$Method/HEAD)
-   :OPTIONS (ClientDriverRequest$Method/OPTIONS)})
+   :TRACE   (ClientDriverRequest$Method/TRACE)})
 
 (def types
   {:JSON  "application/json"
-   :XML   "text/xml"
-   :PLAIN "text/plain"})
+   :PLAIN "text/plain"
+   :XML   "text/xml"})
 
 (defn content-type
   [sym]
