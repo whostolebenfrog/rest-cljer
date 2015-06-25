@@ -1,7 +1,7 @@
 (ns rest-cljer.test.core
-  (:require [environ.core :refer [env]]
-            [clj-http.client :as http]
+  (:require [clj-http.client :as http]
             [clojure.data.json :refer [json-str read-str]]
+            [environ.core :refer [env]]
             [midje.sweet :refer :all]
             [rest-cljer.core :refer [rest-driven string-capture]])
   (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]

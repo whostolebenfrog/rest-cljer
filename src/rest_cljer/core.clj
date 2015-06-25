@@ -7,9 +7,9 @@
   (:import [com.github.restdriver.clientdriver ClientDriverFactory ClientDriverRule
             RestClientDriver ClientDriverRequest$Method]
            [com.github.restdriver.clientdriver.capture StringBodyCapture]
+           [java.util.concurrent TimeUnit]
            [java.io InputStream]
-           [org.hamcrest Matcher]
-           [java.util.concurrent TimeUnit]))
+           [org.hamcrest Matcher]))
 
 (def verbs
   {:GET     (ClientDriverRequest$Method/GET)
