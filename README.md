@@ -11,7 +11,7 @@ Rest-cljer is a Clojure wrapper for [rest-driver](https://github.com/rest-driver
 Import from [clojars](https://clojars.org/rest-cljer) with:
 
 ```clj
-[rest-cljer "0.1.21"]
+[rest-cljer "0.1.22"]
 ```
 
 then
