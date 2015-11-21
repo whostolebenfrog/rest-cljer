@@ -10,7 +10,7 @@
                  [environ "0.3.0"]
                  [junit "4.11"]
                  [midje "1.5.1"]
-                 [org.clojure/clojure "1.4.0"]
+                 [org.clojure/clojure "1.7.0"]
                  [speclj "3.1.0"]]
 
   :lein-release {:deploy-via :clojars}

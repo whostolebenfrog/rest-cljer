@@ -66,6 +66,30 @@
                                       :body (json/generate-string {:ping "pong"})
                                       :throw-exceptions false}) => (contains {:status 204}))))
 
+ (fact "check body via predicate"
+       (let [resource-path "/some/resource/path"
+             url (local-path resource-path)]
+         (rest-driven
+          [{:method :POST
+            :url resource-path
+            :body #(apply = (map sort [[3 2 1] %]))}
+           {:status 204}]
+          (http/post url {:content-type :json
+                          :body (json/generate-string [1 3 2])
+                          :throw-exceptions false}) => (contains {:status 204}))))
+
+ (fact "check body via predicate - type as string"
+       (let [resource-path "/some/resource/path"
+             url (local-path resource-path)]
+         (rest-driven
+          [{:method :POST
+            :url resource-path
+            :body [#(= "Hi" %) "application/text"]}
+           {:status 204}]
+          (http/post url {:content-type "application/text"
+                          :body "Hi"
+                          :throw-exceptions false}) => (contains {:status 204}))))
+
  (fact "test json document capture as a string"
        (let [resource-path "/some/resource/path"
              url (local-path resource-path)
