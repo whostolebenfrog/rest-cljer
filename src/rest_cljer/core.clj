@@ -118,6 +118,7 @@
     ((or method :GET) verbs)))
 
 (defmacro rest-driven
+  {:style/indent 1}
   ([pairs & body]
      `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))]
         (try
