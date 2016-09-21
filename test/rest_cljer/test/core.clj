@@ -161,6 +161,12 @@
        (let [resource-path "/some/resource/path"]
          (rest-driven [{:method :POST, :url resource-path, :headers {"from" "midjefact", "with" "value"}}
                        {:status 204}]
+                      (http/post (local-path resource-path) {:headers {"from" "midjefact", "with" "value"}}) => (contains {:status 204}))))
+
+  (fact "rest-driven call with expected header succeeds without exceptions with keyword header names"
+       (let [resource-path "/some/resource/path"]
+         (rest-driven [{:method :POST, :url resource-path, :headers {:from "midjefact" :with "value"}}
+                       {:status 204}]
            (http/post (local-path resource-path) {:headers {"from" "midjefact", "with" "value"}}) => (contains {:status 204}))))
 
  (fact "rest-driven call with missing header throws exception"

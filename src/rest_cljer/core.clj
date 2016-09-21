@@ -88,14 +88,14 @@
         times (.times expectation times)))
 
 (defn add-header! [r [k v]]
-  (.withHeader r k v))
+  (.withHeader r (name k) v))
 
 (defn add-headers [r headers]
   (doseq [h headers]
     (add-header! r h)))
 
 (defn add-absent-header! [r k]
-  (.withoutHeader r k))
+  (.withoutHeader r (name k)))
 
 (defn add-after  [r m]
   (when m
