@@ -58,6 +58,10 @@
   (proxy [StringBodyCapture clojure.lang.IFn] []
     (invoke [] (proxy-super getContent))))
 
+(defn json-capture []
+  (proxy [StringBodyCapture clojure.lang.IFn] []
+    (invoke [] (json/parse-string (proxy-super getContent) true))))
+
 (defn add-param! [request param-name param-vals]
   (doseq [v param-vals]
     (.withParam request (name param-name) v)))
