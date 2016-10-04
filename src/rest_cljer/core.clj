@@ -170,8 +170,9 @@
               (let [expectation# (.addExpectation driver# on-request# give-response#)]
                 (add-times expectation# (:times response#)))))
 
-          ~@body
+          (let [body-value# (do ~@body)]
+            (.verify driver#)
 
-          (.verify driver#)
+            body-value#)
 
           (finally (.shutdownQuietly driver#)))))))
