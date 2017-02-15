@@ -14,6 +14,7 @@
   :lein-release {:deploy-via :clojars}
 
   :profiles {:dev {:plugins [[lein-midje "3.1.0"]
+                             [pjstadig/humane-test-output "0.8.1"]
                              [lein-release "1.0.5"]
                              [lein-rpm "0.0.4"]]
                    :dependencies [[midje "1.5.1"]
