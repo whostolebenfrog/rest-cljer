@@ -1,4 +1,4 @@
-(defproject rest-cljer "0.2.0-SNAPSHOT"
+(defproject rest-cljer "0.2.0"
   :description "A Clojure wrapper for the rest driver library"
   :url "https://github.com/whostolebenfrog/rest-cljer"
   :license {:name "Eclipse Public License"
