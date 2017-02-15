@@ -90,6 +90,14 @@ The body can also be a regex or a string along with a content type, specified as
         :body [#"a regex" "someothercontent/type"]
 ```
 
+The body can also be a predicate, or a two-valued vector with predicate and content-type. If the content-type is not set or set to "application/json" the body will be coerced into clojure format and then applied to the predicate.
+
+```clj
+        :body [#(= "a string" %) "text/plain"]
+        
+        :body :foo
+```
+
 If you need to inspect the details of a request you can create a string-capture and analyse the details later:
 
 ```clj
@@ -124,8 +132,8 @@ Request map params:
     :params  -> a map of expected request params in the form {"name" "value"} or {:name "value"}
                 that would match ?name=value
                 alternatively use :any to match any params
-    :body    -> a map that should match the body of the request or a vector containing a string or regex
-                plus the content type.
+    :body    -> a map that should match the body of the request or a predicate or a vector containing 
+                a string/predicate/regex plus the content type.
     :url     -> a string or regex that should match the url
     :headers -> a map of headers that are expected on the incoming request where
                 keys are header names and values are header values.
