@@ -18,4 +18,4 @@
                              [lein-release "1.0.5"]
                              [lein-rpm "0.0.4"]]
                    :dependencies [[midje "1.5.1"]
-                                  [speclj "3.1.0"]]}})
+                                  [speclj "3.3.2"]]}})
