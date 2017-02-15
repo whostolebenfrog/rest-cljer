@@ -110,7 +110,7 @@
                        {:body {:inigo "montoya"}}]
                       (let [resp (http/get url)]
                         resp => (contains {:status 200})
-                        (:headers resp) => (contains {"content-type" "application/json"})
+                        (:headers resp) => (contains {"Content-Type" "application/json"})
                         (json/parse-string (:body resp) true) => {:inigo "montoya"}))))
 
  (fact "sweetening of response doesn't override explicit http status"
@@ -121,7 +121,7 @@
                         :body {:inigo "montoya"}}]
                       (let [resp (http/get url {:throw-exceptions false})]
                         resp => (contains {:status 400})
-                        (:headers resp) => (contains {"content-type" "application/json"})
+                        (:headers resp) => (contains {"Content-Type" "application/json"})
                         (json/parse-string (:body resp) true) => {:inigo "montoya"}))))
 
  (fact "test post-processing of request and response, replace initial values with new ones using :and function"
@@ -202,7 +202,7 @@
                        {:status 204, :headers {"from" "rest-cljer", "with" "value"}}]
                       (let [response (http/post url)]
                         response => (contains {:status 204})
-                        (:headers response) => (contains {"from" "rest-cljer"})
+                        (:headers response) => (contains {"From" "rest-cljer"})
                         (:headers response) => (contains {"with" "value"})))))
 
  (fact "can supply params using keywords as well as strings"
