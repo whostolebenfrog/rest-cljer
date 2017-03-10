@@ -90,6 +90,26 @@
                           :body "Hi"
                           :throw-exceptions false}) => (contains {:status 204}))))
 
+  (fact "check body via predicate order independant"
+       (let [resource-path "/some/resource/path"
+             url (local-path resource-path)]
+         (rest-driven
+          [{:method :POST
+            :url resource-path
+            :body [#(= "Hi" %) "application/text"]}
+           {:status 204}
+
+           {:method :POST
+            :url resource-path
+            :body [#(= "not-hi" %) "application/text"]}
+           {:status 204}]
+           (http/post url {:content-type "application/text"
+                           :body "not-hi"
+                           :throw-exceptions false})
+          (http/post url {:content-type "application/text"
+                          :body "Hi"
+                          :throw-exceptions false}) => (contains {:status 204}))))
+
  (fact "test json document capture as a string"
        (let [resource-path "/some/resource/path"
              url (local-path resource-path)
