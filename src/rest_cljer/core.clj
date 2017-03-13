@@ -30,8 +30,14 @@
     (sym types)
     sym))
 
+(defn- get-diffs
+  [expected actual]
+  (if (map? expected)
+    (diff expected (try (json/parse-string actual true) (catch Exception e actual)))
+    [expected actual]))
+
 (defn- pred-matcher
-  [request pred]
+  [request pred body]
   (proxy [org.hamcrest.Matcher] []
     (matches [item]
       (if (.matches (.getBodyContentType request) "application/json")
@@ -41,12 +47,12 @@
       (doto description
         (.appendText (format "expected %s not received" (.getBodyContentType request)))))
     (describeMismatch [actual description]
-      (let [difs (diff map (json/parse-string actual true))]
+      (let [difs (get-diffs body actual)]
         (doto description
-          (.appendText (str "expected has <" (first difs) ">, actual has <" (second difs) ">")))))))
+          (.appendText (str "expected BODY has <" (first difs) ">, actual BODY has <" (second difs) "> ")))))))
 
-(defn- map-matcher [request map]
-  (pred-matcher request (partial = map)))
+(defn- map-matcher [request body]
+  (pred-matcher request (partial = body) body))
 
 (defn string-capture []
   (proxy [StringBodyCapture clojure.lang.IFn] []
@@ -70,7 +76,7 @@
     (when-not (nil? body)
       (cond
         (map? body) (.withBody request (map-matcher request body) content-type)
-        (fn? body) (.withBody request (pred-matcher request body) content-type)
+        (fn? body) (.withBody request (pred-matcher request body body) content-type)
         :else (.withBody request body content-type)))))
 
 (defn add-times [expectation times]
