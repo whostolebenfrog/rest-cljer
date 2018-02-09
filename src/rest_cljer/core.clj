@@ -135,7 +135,7 @@
 (defmacro rest-driven
   {:style/indent 1}
   ([pairs & body]
-     `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))]
+     `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer/valueOf (env :restdriver-port))))]
         (try
           (doseq [pair# (partition 2 (flatten ~pairs))]
             (let [request# (first pair#)
