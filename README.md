@@ -1,4 +1,4 @@
-# rest-cljer
+# rest-cljer [![Build Status](https://travis-ci.org/whostolebenfrog/rest-cljer.svg?branch=master)](https://travis-ci.org/whostolebenfrog/rest-cljer) [![Clojars Project](https://img.shields.io/clojars/v/rest-cljer.svg)](https://clojars.org/rest-cljer)
 
 Rest-cljer is a library that allows *real* mocking of http rest calls. It starts a server to listen for your requests and returns real http responses to those requests. It allows you to test your services in isolation from one another whilst actually exercising your service's code. As such it allows the service to be tested from a separate process.
 
