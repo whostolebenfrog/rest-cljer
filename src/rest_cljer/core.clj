@@ -132,10 +132,20 @@
     (ClientDriverRequest$Method/custom method)
     ((or method :GET) verbs)))
 
+(defn create-client-driver
+  []
+  (if (env :restdriver-port)
+    (.. (ClientDriverFactory.) (createClientDriver (Integer. (env :restdriver-port))))
+    (.. (ClientDriverFactory.) (createClientDriver))))
+
+(def ^:dynamic *rest-driver-port*
+  nil)
+
 (defmacro rest-driven
   {:style/indent 1}
   ([pairs & body]
-     `(let [driver# (.. (ClientDriverFactory.) (createClientDriver (Integer/valueOf (env :restdriver-port))))]
+   `(let [driver# (create-client-driver)]
+      (binding [*rest-driver-port* (.getPort driver#)]
         (try
           (doseq [pair# (partition 2 (flatten ~pairs))]
             (let [request# (first pair#)
@@ -164,4 +174,4 @@
 
           (.verify driver#)
 
-          (finally (.shutdownQuietly driver#))))))
+          (finally (.shutdownQuietly driver#)))))))
