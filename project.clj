@@ -11,11 +11,10 @@
                  [junit "4.12"]
                  [org.clojure/clojure "1.8.0"]]
 
-  :lein-release {:deploy-via :clojars}
+  :deploy-repositories [["releases" :clojars]]
 
   :profiles {:dev {:plugins [[lein-midje "3.1.0"]
                              [pjstadig/humane-test-output "0.8.2"]
-                             [lein-release "1.0.5"]
                              [lein-rpm "0.0.4"]]
                    :dependencies [[midje "1.9.1"]
                                   [speclj "3.3.2"]]}})
