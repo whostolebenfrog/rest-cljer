@@ -22,6 +22,12 @@
                        {:status 204}]
            (http/post (local-path resource-path)) => (contains {:status 204}))))
 
+ (fact "expected rest-driven call returns body result"
+       (let [resource-path "/some/resource/path"]
+         (rest-driven [{:method :POST :url resource-path}
+                       {:status 204}]
+           (http/post (local-path resource-path))) => (contains {:status 204})))
+
  (fact "rest-driven call with binary body succeeds without exceptions"
        (let [resource-path "/some/resource/path"
              bytes (byte-array [(byte 10) (byte 20) (byte 30)])]
