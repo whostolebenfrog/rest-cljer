@@ -3,7 +3,7 @@
             [clj-http.client :as http]
             [environ.core :refer [env]]
             [midje.sweet :refer :all]
-            [rest-cljer.core :refer [*rest-driver-port* rest-driven string-capture]])
+            [rest-cljer.core :refer [*rest-driver-port* json-capture rest-driven string-capture]])
   (:import [com.github.restdriver.clientdriver ClientDriver ClientDriverRequest$Method]
            [com.github.restdriver.clientdriver.exception ClientDriverFailedExpectationException]
            [java.net SocketTimeoutException]))
@@ -99,6 +99,18 @@
                                                   :body (json/generate-string {:ping "pong"})
                                                   :throw-exceptions false}) => (contains {:status 204})
            (capturer) => "{\"ping\":\"pong\"}")))
+
+ (fact "test json document captured and parsed using json-capture"
+       (let [resource-path "/some/resource/path"
+             capturer (json-capture)]
+         (rest-driven [{:method :POST :url resource-path
+                        :body {:ping "pong"}
+                        :capture capturer}
+                       {:status 204}]
+           (http/post (local-path resource-path) {:content-type :json
+                                                  :body (json/generate-string {:ping "pong"})
+                                                  :throw-exceptions false}) => (contains {:status 204})
+           (capturer) => {:ping "pong"})))
 
  (fact "test sweetening of response definitions"
        (let [resource-path "/some/resource/path"]
