@@ -13,8 +13,6 @@
 
   :deploy-repositories [["releases" :clojars]]
 
-  :profiles {:dev {:plugins [[lein-midje "3.1.0"]
-                             [pjstadig/humane-test-output "0.8.2"]
+  :profiles {:dev {:plugins [[pjstadig/humane-test-output "0.8.2"]
                              [lein-rpm "0.0.4"]]
-                   :dependencies [[midje "1.9.1"]
-                                  [speclj "3.3.2"]]}})
+                   :dependencies [[speclj "3.3.2"]]}})

@@ -20,7 +20,16 @@ then
 (:require [rest-cljer.core :refer [rest-driven]])
 ```
 
-Example below shows midje usage.
+An example of clojure test usage:
+
+```clj
+(deftest example-of-a-test
+  (rest-driven [{:method :GET :url "/gety"}
+                {:status 200}]
+    (is (= 200 (:status (http/get "http://localhost:8081/gety"l))))))
+```
+
+An example of midje usage.
 
 ```clj
 (fact "Example of testing two"
