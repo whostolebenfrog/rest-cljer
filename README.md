@@ -20,13 +20,22 @@ then
 (:require [rest-cljer.core :refer [rest-driven]])
 ```
 
-An example of clojure test usage:
+An example of clojure test usage (using environ to set `:rest-driver-port` to 8081):
 
 ```clj
 (deftest example-of-a-test
   (rest-driven [{:method :GET :url "/gety"}
                 {:status 200}]
-    (is (= 200 (:status (http/get "http://localhost:8081/gety"l))))))
+    (is (= 200 (:status (http/get "http://localhost:8081/gety"))))))
+```
+
+An example using a random port:
+
+```clj
+(deftest example-of-a-test
+  (rest-driven [{:method :GET :url "/gety"}
+                {:status 200}]
+    (is (= 200 (:status (http/get (str "http://localhost:" *rest-driver-port* " /gety")))))))
 ```
 
 An example of midje usage.
