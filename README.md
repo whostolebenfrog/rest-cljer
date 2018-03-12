@@ -2,7 +2,7 @@
 
 Rest-cljer is a library that allows *real* mocking of http rest calls. It starts a server to listen for your requests and returns real http responses to those requests. It allows you to test your services in isolation from one another whilst actually exercising your service's code. As such it allows the service to be tested from a separate process.
 
-A typical test scenario would be to switch out your service's dependencies to point to `:restdriver-port` on localhost and then use rest-cljer to mock the responses. Rest-cljer uses [environ](https://github.com/weavejester/environ) to determine `:restdriver-port`.
+A typical test scenario would be to switch out your service's dependencies to point to `:restdriver-port` on localhost and then use rest-cljer to mock the responses. Rest-cljer can use [environ](https://github.com/weavejester/environ) to determine `:restdriver-port`, so you can set your chosen port via a system property or environment variable.
 
 Rest-cljer is a Clojure wrapper for [rest-driver](https://github.com/rest-driver/rest-driver).
 
